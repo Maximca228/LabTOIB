@@ -19,30 +19,31 @@ namespace LabTOIB
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
+            Random random = new Random();
 
-            byte[] typedPwHash;
-            using (SHA256 sha256 = SHA256.Create())
+            if (actual_pw.Length != typed_pw.Length)
             {
-                typedPwHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(typed_pw));
+                Thread.Sleep(random.Next(100, 500));
+                sw.Stop();
+                MessageBox.Show($"Ошибка авторизации за {sw.Elapsed}");
+                return false;
             }
 
-            byte[] actualPwHash;
-            using (SHA256 sha256 = SHA256.Create())
+            for (int i = 0; i < actual_pw.Length; i++)
             {
-                actualPwHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(actual_pw));
-            }
-
-            if (!typedPwHash.SequenceEqual(actualPwHash))
-            {
+                if (actual_pw[i] != typed_pw[i])
+                {
+                    Thread.Sleep(random.Next(100, 500));
                     sw.Stop();
                     MessageBox.Show($"Ошибка авторизации за {sw.Elapsed}");
                     return false;
+                }
             }
-
             sw.Stop();
             MessageBox.Show($"Авторизовано за {sw.Elapsed}");
             return true;
         }
+    }
     }
 
 }
